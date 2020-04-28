@@ -22,13 +22,9 @@ def softmax(X):
     return X_exp / X_exp.sum(dim=1, keepdim=True)
 
 def net(X):
-    # W = num_inputs x num_output   
+    # W = num_inputs x num_output
     z = torch.mm(X.view((-1, num_inputs)), W) + b
     return softmax(z)
-
-# y_hat = torch.tensor([[0.1, 0.3, 0.6], [0.3, 0.2, 0.5]])
-# y = torch.LongTensor([0, 2]).view((-1, 1))
-# print(y_hat.gather(dim=1, index=y))
 
 def cross_entropy(y_hat, y):
     return -torch.log(y_hat.gather(dim=1, index=y.view((-1, 1))))
@@ -65,12 +61,12 @@ def train_ch3(net, train_iter, test_iter, loss, num_epochs, batch_size, params=N
                 com.sgd(params, lr, batch_size)
             else:
                 optimizer.step()
-            
+
             train_cost_sum += cost.item()
             train_acc_sum += (y_hat.argmax(dim=1) == y).sum().item()
             n += y.shape[0]
         test_acc = evaluate_accuracy(test_iter, net)
-        print("epoch %d, cost %.4f, train acc %.3f, test acc %.3f" 
+        print("epoch %d, cost %.4f, train acc %.3f, test acc %.3f"
             % (epoch + 1, train_cost_sum / n, train_acc_sum / n, test_acc))
 
 train_ch3(net, train_iter, test_iter, cross_entropy, num_epochs, batch_size, [W, b], lr)
